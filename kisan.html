@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kisaan Dost 🌾</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 0 10px #ccc;
+      border-radius: 10px;
+    }
+    h1 {
+      text-align: center;
+      color: #2e7d32;
+    }
+    .section {
+      margin-top: 30px;
+    }
+    input {
+      padding: 8px;
+      width: 60%;
+      margin-right: 10px;
+    }
+    button {
+      padding: 8px 16px;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #weatherResult {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kisaan Dost 🌾</h1>
+
+    <div class="section" id="weather">
+      <h2>Live Weather & Crop Suggestion</h2>
+      <input type="text" id="cityInput" placeholder="City name likho..." />
+      <button onclick="getWeather()">Check Weather</button>
+      <div id="weatherResult"></div>
+    </div>
+
+    <div class="section" id="mandi">
+      <h2>Mandi Rates (Today)</h2>
+      <ul>
+        <li>🌾 Gehu - Rs 2300 / 40kg</li>
+        <li>🌾 Chawal - Rs 2700 / 40kg</li>
+        <li>🌾 Bajra - Rs 1800 / 40kg</li>
+      </ul>
+    </div>
+
+    <div class="section" id="soil">
+      <h2>Zameen Info & Suggestions</h2>
+      <p>🟤 Loamy soil best hoti hai Gehu aur Sarson ke liye.</p>
+      <p>🟤 Clay soil mein Chawal achi tarah hota hai.</p>
+      <p>🟤 Sandy soil mein Bajra ya Moong behtar hoti hai.</p>
+    </div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value;
+      const apiKey = "YOUR_API_KEY"; // ← yahan apna OpenWeatherMap ka API key daalo
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const temp = data.main.temp;
+        const condition = data.weather[0].main;
+
+        let cropSuggestion = "Koi specific mashwara nahi.";
+
+        if (condition.includes("Rain") || temp < 20) {
+          cropSuggestion = "Chawal ya Sarson ka waqt hai.";
+        } else if (temp > 30) {
+          cropSuggestion = "Moong ya Bajra behtar honge.";
+        } else {
+          cropSuggestion = "Gehu ya Makai achi choice hai.";
+        }
+
+        document.getElementById("weatherResult").innerText = `
+City: ${city}
+Temperature: ${temp}°C
+Weather: ${condition}
+Mashwara: ${cropSuggestion}
+        `;
+      } catch (err) {
+        document.getElementById("weatherResult").innerText =
+          "City sahi likho ya internet check karo.";
+      }
+    }
+  </script>
+</body>
+</html>
